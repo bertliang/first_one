@@ -8,31 +8,48 @@ import java.net.*;
 import java.util.*;
 
 public final class HTTPServer {
-    public static int serverPort = 9999;    // default port CHANGE THIS
-    public static String http_root_path = "";    // rooted default path in your mathlab area
+    public static int serverPort = 35180;    // default port CHANGE THIS 35180-35189
+    public static String http_root_path = "mathlab.utsc.utoronto.ca";    // rooted default path in your mathlab area
 
     public static void main(String args[]) throws Exception  {
-	// ADD_CODE: allow the user to choose a different port, as arg[0]  
+	// ADD_CODE: allow the user to choose a different port, as arg[0] 
+	if(args.length>0){
+		serverport = args[0];
+	} 
+    
+    // ADD_CODE: allow the user to choose a different http_root_path, as arg[1] 
+    if(args.length>1){
+    	http_root_path = args[1]
+    }
 
-	// ADD_CODE: allow the user to choose a different http_root_path, as arg[1] 
-
+	
 	// display error on server stdout if usage is incorrect
 	if (args.length > 2) {
 	    System.out.println("usage: java HTTPServer [port_# [http_root_path]]");
 	    System.exit(0);
 	}
 
-	// ADD_CODE: create server socket 
+	// ADD_CODE: create server socket
+	ServerSocket singleSocket = null;
+	Socket connectionSocket = null;
+	String clientSentence;
+	String capitalizeSentece;
+
+	singleSocket = new ServerSocket(serverport);
 
 	// ADD_CODE: display server stdout message indicating listening
-	// on port # with server root path ... 
+	// on port # with server root path ...
+	System.out.println("listening from port" + serverport + http_root_path); 
 
 	// server runs continuously
 	while (true) {
 	    try {
-		// ADD_CODE: take a waiting connection from the accepted queue 
+		// ADD_CODE: take a waiting connection from the accepted queue
+		connectionSocket = singleSocket.accept();
 
-		// ADD_CODE: display on server stdout the request origin  
+		// ADD_CODE: display on server stdout the request origin
+		System.out.println("connection from " + connectionSocket.getIntAddrss()
+			+ "." + connectionSocket.getPort());  
 	
 		/* you may wish to factor out the remainder of this
 		 * try-block code as a helper method, that could be used
