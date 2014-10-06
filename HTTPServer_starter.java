@@ -58,7 +58,8 @@ public final class HTTPServer {
 		 */
 
 		// create buffered reader for client input
-		BufferedReader inFromClient = // ADD_CODE
+		BufferedReader inFromClient = 
+			new BufferedReader(new InputStreamReader(connectionSocket.getInputStream())); // ADD_CODE
 
 		String requestLine = null;	// the HTTP request line
 		String requestHeader = null;	// HTTP request header line
@@ -67,7 +68,7 @@ public final class HTTPServer {
 		 * We will handle the request line below, but first, read and
 		 * print to stdout any request headers (which we will ignore).
 		 */
-		requestLine = // ADD_CODE
+		requestLine = inFromClient.readLine(); // ADD_CODE
 
 		// now back to the request line; tokenize the request
 		StringTokenizer tokenizedLine = new StringTokenizer(requestLine);
@@ -93,9 +94,11 @@ public final class HTTPServer {
 
     private static void generateResponse(String urlName, Socket connectionSocket) throws Exception
     {
-	// ADD_CODE: create an output stream  
+	// ADD_CODE: create an output stream
+	DataOutputStream  outToClient = 
+             new DataOutputStream(connectionSocket.getOutputStream());   
 
-	String fileLoc = // ADD_CODE: map urlName to rooted path  
+	String fileLoc = urlName// ADD_CODE: map urlName to rooted path  ??
 	System.out.println ("Request Line: GET " + fileLoc);
 
 	File file = new File( fileLoc );
@@ -115,11 +118,13 @@ public final class HTTPServer {
 	    inFile.read(fileInBytes);
 
 	    // ADD_CODE: generate HTTP response line; output to stdout
+	    System.out.println ("HTTP/1.0 ok\r\n");
 	
 	    // ADD_CODE: generate HTTP Content-Type response header; output to stdout
+	    System.out.println ("Content-Type" + type+ "\r\n");
 
 	    // ADD_CODE: generate HTTP Content-Length response header; output to stdout
-
+ 		System.out.println ("Content-Length" +len+ "\r\n");
 	    // send file content
 	    outToClient.write(fileInBytes, 0, numOfBytes);
 	}  // end else (file found case)
